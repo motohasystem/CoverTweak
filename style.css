@@ -1,0 +1,69 @@
+#canvas {
+    border: 1px solid black;
+}
+
+.file-input {
+    margin: 10px;
+}
+
+.header {
+    text-align: center;
+    color: #4CAF50;
+    font-family: 'Arial', sans-serif;
+    margin-bottom: 20px;
+}
+
+.block {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.label {
+    font-size: 18px;
+    color: #333;
+}
+
+.file-input {
+    margin-top: 10px;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.canvas-container {
+    text-align: center;
+}
+
+#canvas {
+    border: 1px solid black;
+    margin: 0 auto;
+}
+
+.subheader {
+    text-align: center;
+    color: #4CAF50;
+    font-family: 'Arial', sans-serif;
+    margin-top: 40px;
+}
+
+.footnote {
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+.footnote-title {
+    color: #4CAF50;
+}
+
+.link {
+    color: #2196F3;
+}

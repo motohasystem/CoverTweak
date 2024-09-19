@@ -2,27 +2,51 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8" />
-        <title>画像オーバーレイアプリ</title>
-        <style>
-            #canvas {
-                border: 1px solid black;
-            }
-            .file-input {
-                margin: 10px;
-            }
-        </style>
+        <title>CoverTweak</title>
         <link rel="manifest" href="manifest.json" />
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <h1>kintoneスペース画像作成</h1>
-        背景画像を選択
-        <input type="file" accept="image/*" id="image1" class="file-input" /><br/>
-        オーバーレイ画像を選択
-        <input type="file" accept="image/*" id="image2" class="file-input" /><br/>
-        <button id="saveButton">画像を保存</button>
+        <h1 class="header">CoverTweak - kintoneスペース用のカバー画像作成</h1>
+
+        <div class="block">
+            <label for="image1" class="label">背景画像を選択</label><br/>
+            <input type="file" accept="image/*" id="image1" class="file-input" /><br/>
+        </div>
+        
+        <div class="block">
+            <label for="image2" class="label">アイコン画像を選択</label><br/>
+            <input type="file" accept="image/*" id="image2" class="file-input" /><br/>
+        </div>
+        
+        <div class="block">
+            <button id="saveButton" class="button">画像を保存</button>
+        </div>
+        
         <br />
-        <canvas id="canvas"></canvas>
+        
+        <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
+        
         <br />
+        
+        <h2 class="subheader">参考情報</h2>
+        
+        <div class="footnote">
+            <p>このツールの作成にあたって、以下の記事を参考にさせていただきました。kintoneコミュニティの知見の蓄積に感謝します。</p>
+            
+            <h3 class="footnote-title">スペースのカバー画像のアイデアを検討してみま... | キンコミ kintone user community</h3>
+            <p><a href="https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda" class="link">https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda</a></p>
+            
+            <h3 class="footnote-title">スペースのカバー画像をいい感じに設定するためのノウハウ</h3>
+            <p><a href="https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT" class="link">https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT</a></p>
+            
+            <h3 class="footnote-title">【テンプレ有】kintone のスペース カバー画像を(ほぼ)ぴったり作った！｜相澤</h3>
+            <p><a href="https://note.com/zawalog/n/n45ed95da7abc" class="link">https://note.com/zawalog/n/n45ed95da7abc</a></p>
+        </div>
+        
+        
 
         <script src="script.js"></script>
         <script>

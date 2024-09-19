@@ -4,8 +4,7 @@ const assetsToCache = [
     "./index.html",
     "./script.js",
     "./manifest.json",
-    "./icon-192.png",
-    "./icon-512.png",
+    "./style.css",
 ];
 
 self.addEventListener("install", (event) => {
