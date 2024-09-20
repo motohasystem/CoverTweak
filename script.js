@@ -1,60 +1,78 @@
 (() => {
     class CoverCanvas {
         isDragging = false;
-        image1 = new Image();
-        image2 = new Image();
+        backgroundImage = new Image();
+        iconImage = new Image();
 
-        constructor(image1, image2, canvas, saveButton, width_canvas) {
-            this.id_image1 = image1;
-            this.id_image2 = image2;
-            this.id_canvas = canvas;
-            this.id_saveButton = saveButton;
+        constructor(
+            id_background,
+            id_icon,
+            id_canvas,
+            id_saveButton,
+            width_canvas
+        ) {
+            this.id_background = id_background;
+            this.id_icon = id_icon;
+            this.id_canvas = id_canvas;
+            this.id_saveButton = id_saveButton;
             this.width_canvas = width_canvas;
 
             this.pickup_top = 0;
         }
 
         init() {
-            this.imageInput1 = document.getElementById(this.id_image1);
-            this.imageInput2 = document.getElementById(this.id_image2);
-            this.canvas = document.getElementById(this.id_canvas);
-            this.ctx = this.canvas.getContext("2d");
-            this.saveButton = document.getElementById(this.id_saveButton);
+            this.backgroundImageElement = document.getElementById(
+                this.id_background
+            );
+            this.iconImageElement = document.getElementById(this.id_icon);
+            this.canvasElement = document.getElementById(this.id_canvas);
+            this.ctx = this.canvasElement.getContext("2d");
+            this.saveButtonElement = document.getElementById(
+                this.id_saveButton
+            );
 
             this.setButtonEvent(
-                this.imageInput1,
-                this.imageInput2,
-                this.saveButton
+                this.backgroundImageElement,
+                this.iconImageElement,
+                this.saveButtonElement
             );
 
             this.setCanvasEvent();
         }
 
-        updateCanvas(flag_draw_rectangle = true) {
-            // if (this.image1 === undefined || this.image2 === undefined) {
-            //     throw new Error("画像が読み込まれていません");
-            // }
-
-            if (this.image1.complete && this.image2.complete) {
+        updateCanvas(flag_resize = true, flag_draw_rectangle = true) {
+            if (this.backgroundImage.complete && this.iconImage.complete) {
                 const ctx = this.ctx;
                 const pickup_top = this.pickup_top;
-                const canvas = this.canvas;
+                const canvas = this.canvasElement;
 
                 // キャンバスのサイズを設定
-                let max_width = Math.max(this.image1.width, this.image2.width);
-                let max_height = Math.max(
-                    this.image1.height,
-                    this.image2.height
-                );
+                if (flag_resize) {
+                    let max_width = Math.max(
+                        this.backgroundImage.width,
+                        this.iconImage.width
+                    );
+                    let max_height = Math.max(
+                        this.backgroundImage.height,
+                        this.iconImage.height
+                    );
 
-                canvas.width = this.width_canvas;
-                canvas.height = (this.width_canvas * max_height) / max_width;
+                    canvas.width = this.width_canvas;
+                    canvas.height =
+                        (this.width_canvas * max_height) / max_width;
+                }
 
                 // キャンバスをクリア
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // 1枚目の画像を描画
-                ctx.drawImage(this.image1, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(
+                    this.backgroundImage,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
 
                 if (flag_draw_rectangle) {
                     // 0, 0を起点に、1280 x 161のサイズで白い枠線だけの四角形を描画
@@ -69,7 +87,7 @@
                 }
 
                 // 2枚目の画像を重ねて描画
-                ctx.drawImage(this.image2, 0, pickup_top, 161, 161);
+                ctx.drawImage(this.iconImage, 0, pickup_top, 161, 161);
             }
         }
 
@@ -77,23 +95,22 @@
             const self = this;
             imageInput1.addEventListener("change", function (event) {
                 const file = event.target.files[0];
-                console.log({ file });
                 if (file) {
-                    self.image1.src = URL.createObjectURL(file);
-                    self.image1.onload = self.updateCanvas.bind(self);
+                    self.backgroundImage.src = URL.createObjectURL(file);
+                    self.backgroundImage.onload = self.updateCanvas.bind(self);
                 }
             });
 
             imageInput2.addEventListener("change", function (event) {
                 const file = event.target.files[0];
                 if (file) {
-                    self.image2.src = URL.createObjectURL(file);
-                    self.image2.onload = self.updateCanvas.bind(self);
+                    self.iconImage.src = URL.createObjectURL(file);
+                    self.iconImage.onload = self.updateCanvas.bind(self, false);
                 }
             });
 
             saveButton.addEventListener("click", function () {
-                self.updateCanvas(false);
+                self.updateCanvas(false, false);
 
                 // 元のcanvasの一部をコピーするための一時キャンバスを作成
                 const tempCanvas = document.createElement(self.id_canvas);
@@ -106,11 +123,11 @@
 
                 // もとのcanvasの一部を一時キャンバスに描画
                 tempCtx.drawImage(
-                    self.canvas,
+                    self.canvasElement,
                     0,
                     -self.pickup_top,
                     1280,
-                    self.canvas.height
+                    self.canvasElement.height
                 );
 
                 // 一時キャンバスを画面に追加して描画範囲を確認（デバッグ用）
@@ -124,7 +141,7 @@
                 // リンクをクリックしてダウンロードをトリガー
                 link.click();
 
-                self.updateCanvas(true);
+                self.updateCanvas(false, true);
             });
         }
 
