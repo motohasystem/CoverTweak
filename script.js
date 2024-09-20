@@ -154,13 +154,13 @@
             clickable_canvas.addEventListener("mousedown", function (event) {
                 self.isDragging = true;
                 self.pickup_top = event.offsetY - 80;
-                self.updateCanvas();
+                self.updateCanvas(false);
             });
 
             clickable_canvas.addEventListener("mousemove", function (event) {
                 if (self.isDragging) {
                     self.pickup_top = event.offsetY - 80;
-                    self.updateCanvas();
+                    self.updateCanvas(false);
                 }
             });
 
