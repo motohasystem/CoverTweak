@@ -4,6 +4,9 @@
         backgroundImage = new Image();
         iconImage = new Image();
 
+        // 履歴表示用のノードID
+        id_recent_downloads = "recent_downloads";
+
         constructor(
             id_background,
             id_icon,
@@ -29,6 +32,9 @@
             this.ctx = this.canvasElement.getContext("2d");
             this.saveButtonElement = document.getElementById(
                 this.id_saveButton
+            );
+            this.recent_downloads = document.getElementById(
+                this.id_recent_downloads
             );
 
             this.setButtonEvent(
@@ -131,7 +137,7 @@
                 );
 
                 // 一時キャンバスを画面に追加して描画範囲を確認（デバッグ用）
-                document.body.appendChild(tempCanvas);
+                self.recent_downloads.appendChild(tempCanvas);
 
                 // 一時キャンバスのデータをダウンロード用リンクに設定
                 const link = document.createElement("a");
