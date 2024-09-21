@@ -18,6 +18,24 @@
             <label for="image2" class="label">アイコン画像を選択</label><br/>
             <input type="file" accept="image/*" id="image2" class="file-input" /><br/>
         </div>
+
+        <div class="block icon-size-selection">
+            <label class="label">アイコンサイズを選択</label><br/>
+            <div class="icon-size-options">
+                <div>
+                    <input type="radio" id="size128" name="iconSize" value="128" class="radio-input" checked>
+                    <label for="size128">128px</label>
+                </div>
+                <div>
+                    <input type="radio" id="size256" name="iconSize" value="256" class="radio-input">
+                    <label for="size256">256px</label>
+                </div>
+                <div>
+                    <input type="radio" id="size512" name="iconSize" value="512" class="radio-input">
+                    <label for="size512">512px</label>
+                </div>
+            </div>
+        </div>
         
         <div class="block">
             <button id="saveButton" class="button">画像を保存</button>

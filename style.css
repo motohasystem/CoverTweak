@@ -74,3 +74,34 @@
     color: #333;
     margin-top: 20px;
 }
+
+.radio-input {
+    margin-right: 10px;
+    cursor: pointer; /* クリックできる範囲を明示 */
+}
+
+.icon-size-options {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    width: 33.33%; /* 画面全体の3分の1の幅に設定 */
+    margin: 0 auto; /* 中央揃え */
+}
+
+.icon-size-options div {
+    display: flex;
+    align-items: center;
+    cursor: pointer; /* クリックできる範囲を明示 */
+    background-color: #e0e0e0; /* 背景色を追加 */
+    padding: 5px; /* パディングを追加 */
+    border-radius: 5px; /* 角を丸くする */
+}
+
+.icon-size-options label {
+    margin-left: 5px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    cursor: pointer; /* クリックできる範囲を明示 */
+    padding: 3px; /* パディングを追加 */
+    border-radius: 3px; /* 角を丸くする */
+}

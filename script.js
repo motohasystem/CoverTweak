@@ -3,6 +3,7 @@
         isDragging = false;
         backgroundImage = new Image();
         iconImage = new Image();
+        iconRectSize = 128;
 
         // 履歴表示用のノードID
         id_recent_downloads = "recent_downloads";
@@ -44,6 +45,17 @@
             );
 
             this.setCanvasEvent();
+
+            // ラジオボタンを選択するとthis.iconRectSizeが変わるようにする
+            const radioButtons = document.querySelectorAll(
+                'input[type="radio"]'
+            );
+            radioButtons.forEach((radioButton) => {
+                radioButton.addEventListener("change", () => {
+                    this.iconRectSize = parseInt(radioButton.value);
+                    this.updateCanvas(false);
+                });
+            });
         }
 
         updateCanvas(flag_resize = true, flag_draw_rectangle = true) {
@@ -80,20 +92,39 @@
                     canvas.height
                 );
 
+                // グレーアウトエリアの高さ
+                const grayOutHeight = (this.iconRectSize - 64) / 2;
+
                 if (flag_draw_rectangle) {
                     // 0, 0を起点に、1280 x 161のサイズで白い枠線だけの四角形を描画
                     ctx.strokeStyle = "white";
                     ctx.lineWidth = 2;
-                    ctx.strokeRect(0, pickup_top, 1280, 161);
+                    ctx.strokeRect(0, pickup_top, 1280, this.iconRectSize);
 
-                    // 128,0 を起点に、1232x48のサイズで白い塗りつぶし四角を描画
+                    // アイコン画像の右上を起点に、白い塗りつぶし四角を描画
                     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-                    ctx.fillRect(161, pickup_top, 1232, 48);
-                    ctx.fillRect(161, pickup_top + 48 + 64, 1232, 48);
+                    ctx.fillRect(
+                        this.iconRectSize,
+                        pickup_top,
+                        1280 - this.iconRectSize,
+                        grayOutHeight
+                    );
+                    ctx.fillRect(
+                        this.iconRectSize,
+                        pickup_top + grayOutHeight + 64,
+                        1280 - this.iconRectSize,
+                        grayOutHeight
+                    );
                 }
 
                 // 2枚目の画像を重ねて描画
-                ctx.drawImage(this.iconImage, 0, pickup_top, 161, 161);
+                ctx.drawImage(
+                    this.iconImage,
+                    0,
+                    pickup_top,
+                    this.iconRectSize,
+                    this.iconRectSize
+                );
             }
         }
 
@@ -112,6 +143,16 @@
                 if (file) {
                     self.iconImage.src = URL.createObjectURL(file);
                     self.iconImage.onload = self.updateCanvas.bind(self, false);
+
+                    // アイコンのサイズを取得
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = new Image();
+                        img.src = e.target.result;
+                        img.onload = function () {
+                            self.iconRectSize = img.width;
+                        };
+                    };
                 }
             });
 
@@ -121,7 +162,7 @@
                 // 元のcanvasの一部をコピーするための一時キャンバスを作成
                 const tempCanvas = document.createElement(self.id_canvas);
                 tempCanvas.width = 1280;
-                tempCanvas.height = 161;
+                tempCanvas.height = self.iconRectSize;
                 const tempCtx = tempCanvas.getContext("2d");
 
                 // rectangle_top が正しいか確認（デバッグ用にconsole.logで値を確認）
