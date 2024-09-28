@@ -7,21 +7,25 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <h1 class="header">CoverTweak - kintoneスペース用のカバー画像作成</h1>
+        <h1 class="header">CoverTweak - kintoneスペース用のカバー画像をカンタン作成</h1>
 
         <div class="block">
-            <label for="image1" class="label">背景画像を選択</label><br/>
+            <label for="image1" class="label">1️⃣ 背景画像を選択</label><br/>
             <input type="file" accept="image/*" id="image1" class="file-input" /><br/>
         </div>
         
         <div class="block">
-            <label for="image2" class="label">アイコン画像を選択</label><br/>
+            <label for="image2" class="label">2️⃣ アイコン画像を選択</label><br/>
             <input type="file" accept="image/*" id="image2" class="file-input" /><br/>
         </div>
 
         <div class="block icon-size-selection">
-            <label class="label">アイコンサイズを選択</label><br/>
+            <label class="label">3️⃣ アイコンサイズを選択</label><br/>
             <div class="icon-size-options">
+                <div>
+                    <input type="radio" id="size64" name="iconSize" value="64" class="radio-input" checked>
+                    <label for="size64">64px</label>
+                </div>
                 <div>
                     <input type="radio" id="size128" name="iconSize" value="128" class="radio-input" checked>
                     <label for="size128">128px</label>
