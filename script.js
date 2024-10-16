@@ -182,7 +182,7 @@
 
                 // 一時キャンバスのデータをダウンロード用リンクに設定
                 const link = document.createElement("a");
-                link.download = "overlaid_image.png";
+                link.download = "CoverTweak_image.png";
                 link.href = tempCanvas.toDataURL("image/png");
 
                 // リンクをクリックしてダウンロードをトリガー
