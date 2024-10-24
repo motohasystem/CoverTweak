@@ -56,6 +56,10 @@
                     this.updateCanvas(false);
                 });
             });
+
+            // saveButtonをグレーアウト
+            this.saveButtonElement.disabled = true;
+            this.saveButtonElement.style.backgroundColor = "#ccc";
         }
 
         updateCanvas(flag_resize = true, flag_draw_rectangle = true) {
@@ -136,6 +140,10 @@
                     self.backgroundImage.src = URL.createObjectURL(file);
                     self.backgroundImage.onload = self.updateCanvas.bind(self);
                 }
+
+                // saveButtonをアクティブにする
+                self.saveButtonElement.disabled = false;
+                self.saveButtonElement.style.backgroundColor = "#4CAF50";
             });
 
             imageInput2.addEventListener("change", function (event) {
@@ -163,6 +171,7 @@
                 const tempCanvas = document.createElement(self.id_canvas);
                 tempCanvas.width = 1280;
                 tempCanvas.height = self.iconRectSize;
+                tempCanvas.style.width = "75%";
                 const tempCtx = tempCanvas.getContext("2d");
 
                 // rectangle_top が正しいか確認（デバッグ用にconsole.logで値を確認）
@@ -178,7 +187,14 @@
                 );
 
                 // 一時キャンバスを画面に追加して描画範囲を確認（デバッグ用）
-                self.recent_downloads.appendChild(tempCanvas);
+                const recent_downloads =
+                    document.getElementById("copyButtonArea");
+                console.log({ recent_downloads });
+                recent_downloads.parentNode.insertBefore(
+                    tempCanvas,
+                    recent_downloads
+                );
+                recent_downloads.style.display = "block";
 
                 // 一時キャンバスのデータをダウンロード用リンクに設定
                 const link = document.createElement("a");
@@ -189,6 +205,42 @@
                 link.click();
 
                 self.updateCanvas(false, true);
+
+                // クリップボードにコピーするボタン用のイベント
+                ["copyButton", "inlineCopyButton"].forEach((id) => {
+                    const copyButton = document.getElementById(id);
+
+                    copyButton.addEventListener("click", () => {
+                        tempCanvas.toBlob((blob) => {
+                            const item = new ClipboardItem({
+                                "image/png": blob,
+                            });
+                            navigator.clipboard.write([item]).then(() => {
+                                // 吹き出しを表示
+                                const tooltip = document.createElement("div");
+                                tooltip.textContent = "copied !";
+                                tooltip.style.position = "fixed";
+                                tooltip.style.backgroundColor = "#333";
+                                tooltip.style.color = "#fff";
+                                tooltip.style.padding = "5px 10px";
+                                tooltip.style.borderRadius = "5px";
+                                tooltip.style.top = `${
+                                    copyButton.getBoundingClientRect().top - 30
+                                }px`;
+                                tooltip.style.left = `${
+                                    copyButton.getBoundingClientRect().left
+                                }px`;
+                                tooltip.style.zIndex = "1000";
+                                document.body.appendChild(tooltip);
+
+                                // 2秒後に吹き出しを削除
+                                setTimeout(() => {
+                                    document.body.removeChild(tooltip);
+                                }, 2000);
+                            });
+                        });
+                    });
+                });
             });
         }
 

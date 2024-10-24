@@ -35,15 +35,6 @@
     margin-top: 10px;
 }
 
-.button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
 
 .canvas-container {
     text-align: center;
@@ -112,4 +103,47 @@
     cursor: pointer; /* クリックできる範囲を明示 */
     padding: 3px; /* パディングを追加 */
     border-radius: 3px; /* 角を丸くする */
+}
+
+#copyButtonArea {
+    display: none;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.clip-button {
+    padding: 15px 15px; /* サイズを小さくしてちょこんと乗るように */
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative; /* 相対配置 */
+    top: -45px; /* 親ブロックの右肩に配置 */
+    right: -35%; /* 親ブロックの右肩に配置 */
+}
+
+.inline-button {
+    display: inline-block;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.sns-comment {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
 }
