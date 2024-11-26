@@ -61,8 +61,9 @@
             });
 
             // saveButtonをグレーアウト
-            this.saveButtonElement.disabled = true;
-            this.saveButtonElement.style.backgroundColor = "#ccc";
+            this.activateSaveButton(false);
+            // this.saveButtonElement.disabled = true;
+            // this.saveButtonElement.style.backgroundColor = "#ccc";
 
             // ホバーイベントを設定
             this.listenHoverEvent("select_background_image", "bg");
@@ -101,11 +102,11 @@
                                     this.updateCanvas.bind(this);
                             } else if (this.pasteTarget === "icon") {
                                 this.iconImage.src = img.src;
-                                this.iconImage.onload = this.updateCanvas.bind(
-                                    this,
-                                    false
-                                );
+                                this.iconImage.onload =
+                                    this.updateCanvas.bind(this);
                             }
+                            // saveButtonをアクティブにする
+                            this.activateSaveButton(true);
                         };
                     }
                 }
@@ -120,11 +121,11 @@
 
             target_node.addEventListener("mouseover", () => {
                 this.pasteTarget = target;
-                console.log("mouse in");
+                // console.log("mouse in");
             });
             target_node.addEventListener("mouseout", () => {
                 this.pasteTarget = "";
-                console.log("mouse out");
+                // console.log("mouse out");
             });
         }
 
@@ -198,6 +199,17 @@
             }
         }
 
+        activateSaveButton(flag) {
+            // saveButtonをアクティブにする
+            if (flag) {
+                this.saveButtonElement.disabled = false;
+                this.saveButtonElement.style.backgroundColor = "#4CAF50";
+            } else {
+                this.saveButtonElement.disabled = true;
+                this.saveButtonElement.style.backgroundColor = "#ccc";
+            }
+        }
+
         setButtonEvent(imageInput1, imageInput2, saveButton) {
             const self = this;
             imageInput1.addEventListener("change", function (event) {
@@ -208,15 +220,14 @@
                 }
 
                 // saveButtonをアクティブにする
-                self.saveButtonElement.disabled = false;
-                self.saveButtonElement.style.backgroundColor = "#4CAF50";
+                self.activateSaveButton(true);
             });
 
             imageInput2.addEventListener("change", function (event) {
                 const file = event.target.files[0];
                 if (file) {
                     self.iconImage.src = URL.createObjectURL(file);
-                    self.iconImage.onload = self.updateCanvas.bind(self, false);
+                    self.iconImage.onload = self.updateCanvas.bind(self, true);
 
                     // アイコンのサイズを取得
                     const reader = new FileReader();
@@ -228,6 +239,8 @@
                         };
                     };
                 }
+                // saveButtonをアクティブにする
+                self.activateSaveButton(true);
             });
 
             saveButton.addEventListener("click", function () {

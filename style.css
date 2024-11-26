@@ -170,9 +170,25 @@
     vertical-align: middle; /* 画像を中央揃え */
 }
 
-#select_background_image:hover, #select_icon_image:hover{
+#select_background_image:hover, #select_icon_image:hover {
     transform: translateY(-10px); /* 浮き上がり幅を大きく */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: rgba(255, 255, 255, 0.5); /* 背景色を薄っすらと目立たせる */
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer; /* マウスカーソルをポインターに変更 */
+}
+
+#select_background_image:hover::after, #select_icon_image:hover::after {
+    content: "CTRL+V";
+    position: absolute;
+    top: -25px; /* フキダシの位置を調整 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none; /* フキダシがマウスイベントを受け取らないようにする */
 }
