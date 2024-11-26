@@ -169,3 +169,10 @@
     width: 16px;
     vertical-align: middle; /* 画像を中央揃え */
 }
+
+#select_background_image:hover, #select_icon_image:hover{
+    transform: translateY(-10px); /* 浮き上がり幅を大きく */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.5); /* 背景色を薄っすらと目立たせる */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}

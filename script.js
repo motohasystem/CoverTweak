@@ -8,6 +8,9 @@
         // 履歴表示用のノードID
         id_recent_downloads = "recent_downloads";
 
+        // ペースト対象の画像
+        pasteTarget = ""; //  "bg" | "icon"
+
         constructor(
             id_background,
             id_icon,
@@ -60,6 +63,69 @@
             // saveButtonをグレーアウト
             this.saveButtonElement.disabled = true;
             this.saveButtonElement.style.backgroundColor = "#ccc";
+
+            // ホバーイベントを設定
+            this.listenHoverEvent("select_background_image", "bg");
+            this.listenHoverEvent("select_icon_image", "icon");
+
+            // ペーストイベントを設定
+            this.setPasteAction();
+        }
+
+        setPasteAction() {
+            // ペーストイベントリスナーの追加
+            document.addEventListener("paste", (event) => {
+                if (this.pasteTarget === "") return;
+
+                const items = event.clipboardData.items;
+
+                for (let item of items) {
+                    if (item.type.startsWith("image/")) {
+                        const file = item.getAsFile();
+                        const img = new Image();
+
+                        // ファイルを読み込み、画像が読み込まれたらcanvasに描画
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            img.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+
+                        img.onload = () => {
+                            // Canvasの大きさを画像サイズに合わせるか、描画位置を調整
+                            // ctx.clearRect(0, 0, canvas.width, canvas.height); // 既存の描画をクリア
+                            // ctx.drawImage(img, 0, 0); // 画像を(0, 0)に描画
+                            if (this.pasteTarget === "bg") {
+                                this.backgroundImage.src = img.src;
+                                this.backgroundImage.onload =
+                                    this.updateCanvas.bind(this);
+                            } else if (this.pasteTarget === "icon") {
+                                this.iconImage.src = img.src;
+                                this.iconImage.onload = this.updateCanvas.bind(
+                                    this,
+                                    false
+                                );
+                            }
+                        };
+                    }
+                }
+            });
+        }
+
+        // ホバーイベントを設定
+        listenHoverEvent(target_id, target) {
+            // select_background_imageをホバーすると、pasteTargetに"bg"を代入
+            // ホバーを解除すると、pasteTargetを空文字にする
+            const target_node = document.getElementById(target_id);
+
+            target_node.addEventListener("mouseover", () => {
+                this.pasteTarget = target;
+                console.log("mouse in");
+            });
+            target_node.addEventListener("mouseout", () => {
+                this.pasteTarget = "";
+                console.log("mouse out");
+            });
         }
 
         updateCanvas(flag_resize = true, flag_draw_rectangle = true) {
