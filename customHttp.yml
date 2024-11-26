@@ -2,4 +2,4 @@ customHeaders:
     - pattern: "**/*" # 全てのファイルに適用
       headers:
           - key: Cache-Control
-            value: no-cache, no-store
+            value: no-cache, no-store, must-revalidate
