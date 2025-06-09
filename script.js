@@ -387,22 +387,21 @@
             }
             
             // 新しいキャンバスを追加
-            // アスペクト比を計算して高さを設定
-            const aspectRatio = tempCanvas.height / tempCanvas.width;
-            
+            // アスペクト比を維持してスタイルを設定
             tempCanvas.style.width = '100%';
             tempCanvas.style.maxWidth = '100%';
-            tempCanvas.style.height = `${tempCanvas.height}px`;
+            tempCanvas.style.height = 'auto';
             tempCanvas.style.maxHeight = '400px';
             tempCanvas.style.borderRadius = '12px';
             tempCanvas.style.boxShadow = 'var(--shadow-lg)';
             tempCanvas.style.display = 'block';
+            tempCanvas.style.objectFit = 'contain';
             previewArea.insertBefore(tempCanvas, previewArea.firstChild);
             
             console.log('Canvas inserted with dimensions:', {
                 canvasWidth: tempCanvas.width,
                 canvasHeight: tempCanvas.height,
-                aspectRatio: aspectRatio
+                aspectRatio: tempCanvas.height / tempCanvas.width
             });
             
             // コピーボタンを表示
