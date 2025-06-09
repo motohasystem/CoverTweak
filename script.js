@@ -10,6 +10,9 @@
 
         // ペースト対象の画像
         pasteTarget = ""; //  "bg" | "icon"
+        
+        // プレビュー用キャンバス
+        previewCanvas = null;
 
         constructor(
             id_background,
@@ -77,6 +80,9 @@
             
             // クリックイベントを設定（ファイル選択ダイアログを開く）
             this.setupClickToSelect();
+            
+            // コピーボタンの初期設定
+            this.setupCopyButtons();
         }
 
         setPasteAction() {
@@ -215,6 +221,47 @@
             
             reader.readAsDataURL(file);
         }
+        
+        setupCopyButtons() {
+            // コピーボタンのイベント設定
+            ["copyButton", "inlineCopyButton"].forEach((id) => {
+                const button = document.getElementById(id);
+                if (button) {
+                    button.addEventListener("click", () => {
+                        if (this.previewCanvas) {
+                            this.previewCanvas.toBlob((blob) => {
+                                const item = new ClipboardItem({
+                                    "image/png": blob,
+                                });
+                                navigator.clipboard.write([item]).then(() => {
+                                    // 吹き出しを表示
+                                    const tooltip = document.createElement("div");
+                                    tooltip.textContent = "copied !";
+                                    tooltip.style.position = "fixed";
+                                    tooltip.style.background = "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)";
+                                    tooltip.style.color = "#fff";
+                                    tooltip.style.padding = "5px 10px";
+                                    tooltip.style.borderRadius = "5px";
+                                    tooltip.style.top = `${
+                                        button.getBoundingClientRect().top - 30
+                                    }px`;
+                                    tooltip.style.left = `${
+                                        button.getBoundingClientRect().left
+                                    }px`;
+                                    tooltip.style.zIndex = "1000";
+                                    document.body.appendChild(tooltip);
+
+                                    // 2秒後に吹き出しを削除
+                                    setTimeout(() => {
+                                        document.body.removeChild(tooltip);
+                                    }, 2000);
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
 
         updateCanvas(flag_resize = true, flag_draw_rectangle = true) {
             if (this.backgroundImage.complete && this.iconImage.complete) {
@@ -283,7 +330,54 @@
                     this.iconRectSize,
                     this.iconRectSize
                 );
+                
+                // プレビューエリアを更新
+                this.updatePreview();
             }
+        }
+        
+        updatePreview() {
+            // プレビュー用の一時キャンバスを作成
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 1280;
+            tempCanvas.height = this.iconRectSize;
+            const tempCtx = tempCanvas.getContext("2d");
+            
+            // 元のcanvasの一部を一時キャンバスに描画
+            tempCtx.drawImage(
+                this.canvasElement,
+                0,
+                -this.pickup_top,
+                1280,
+                this.canvasElement.height
+            );
+            
+            // プレビューエリアを更新
+            const previewArea = document.getElementById("recent_downloads");
+            const placeholder = previewArea.querySelector('.preview-placeholder');
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+            
+            // 既存のキャンバスがあれば削除
+            const existingCanvas = previewArea.querySelector('canvas');
+            if (existingCanvas) {
+                existingCanvas.remove();
+            }
+            
+            // 新しいキャンバスを追加
+            tempCanvas.style.maxWidth = '100%';
+            tempCanvas.style.height = 'auto';
+            tempCanvas.style.borderRadius = '12px';
+            tempCanvas.style.boxShadow = 'var(--shadow-lg)';
+            previewArea.insertBefore(tempCanvas, previewArea.firstChild);
+            
+            // コピーボタンを表示
+            const copyButtonArea = document.getElementById("copyButtonArea");
+            copyButtonArea.style.display = "block";
+            
+            // グローバルに保存（コピーボタンで使用）
+            this.previewCanvas = tempCanvas;
         }
 
         activateSaveButton(flag) {
@@ -368,46 +462,6 @@
                 link.click();
 
                 self.updateCanvas(false, true);
-
-                // クリップボードにコピーするボタン用のイベント（一度だけ設定）
-                ["copyButton", "inlineCopyButton"].forEach((id) => {
-                    const copyButton = document.getElementById(id);
-                    
-                    // 既存のイベントリスナーを削除（重複防止）
-                    const newButton = copyButton.cloneNode(true);
-                    copyButton.parentNode.replaceChild(newButton, copyButton);
-                    
-                    newButton.addEventListener("click", () => {
-                        tempCanvas.toBlob((blob) => {
-                            const item = new ClipboardItem({
-                                "image/png": blob,
-                            });
-                            navigator.clipboard.write([item]).then(() => {
-                                // 吹き出しを表示
-                                const tooltip = document.createElement("div");
-                                tooltip.textContent = "copied !";
-                                tooltip.style.position = "fixed";
-                                tooltip.style.background = "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)";
-                                tooltip.style.color = "#fff";
-                                tooltip.style.padding = "5px 10px";
-                                tooltip.style.borderRadius = "5px";
-                                tooltip.style.top = `${
-                                    newButton.getBoundingClientRect().top - 30
-                                }px`;
-                                tooltip.style.left = `${
-                                    newButton.getBoundingClientRect().left
-                                }px`;
-                                tooltip.style.zIndex = "1000";
-                                document.body.appendChild(tooltip);
-
-                                // 2秒後に吹き出しを削除
-                                setTimeout(() => {
-                                    document.body.removeChild(tooltip);
-                                }, 2000);
-                            });
-                        });
-                    });
-                });
             });
         }
 
