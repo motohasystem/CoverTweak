@@ -71,6 +71,12 @@
 
             // ペーストイベントを設定
             this.setPasteAction();
+            
+            // ドラッグ&ドロップイベントを設定
+            this.setupDragAndDrop();
+            
+            // クリックイベントを設定（ファイル選択ダイアログを開く）
+            this.setupClickToSelect();
         }
 
         setPasteAction() {
@@ -134,6 +140,80 @@
                 this.pasteTarget = "";
                 // console.log("mouse out");
             });
+        }
+        
+        setupDragAndDrop() {
+            const setupDropZone = (elementId, targetType) => {
+                const dropZone = document.getElementById(elementId);
+                
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('drag-over');
+                });
+                
+                dropZone.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('drag-over');
+                });
+                
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('drag-over');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        const file = files[0];
+                        if (file.type.startsWith('image/')) {
+                            this.handleFileSelect(file, targetType);
+                        }
+                    }
+                });
+            };
+            
+            setupDropZone('select_background_image', 'bg');
+            setupDropZone('select_icon_image', 'icon');
+        }
+        
+        setupClickToSelect() {
+            document.getElementById('select_background_image').addEventListener('click', () => {
+                document.getElementById('image1').click();
+            });
+            
+            document.getElementById('select_icon_image').addEventListener('click', () => {
+                document.getElementById('image2').click();
+            });
+        }
+        
+        handleFileSelect(file, targetType) {
+            const img = new Image();
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                img.src = e.target.result;
+            };
+            
+            img.onload = () => {
+                if (targetType === 'bg') {
+                    this.backgroundImage.src = img.src;
+                    this.backgroundImage.onload = this.updateCanvas.bind(this);
+                    document.getElementById('select_background_image').classList.add('has-file');
+                } else if (targetType === 'icon') {
+                    this.iconImage.src = img.src;
+                    this.iconImage.onload = this.updateCanvas.bind(this, true);
+                    document.getElementById('select_icon_image').classList.add('has-file');
+                    
+                    // アイコンのサイズを取得
+                    this.iconRectSize = img.width;
+                }
+                
+                // saveButtonをアクティブにする
+                this.activateSaveButton(true);
+            };
+            
+            reader.readAsDataURL(file);
         }
 
         updateCanvas(flag_resize = true, flag_draw_rectangle = true) {
@@ -222,38 +302,15 @@
             imageInput1.addEventListener("change", function (event) {
                 const file = event.target.files[0];
                 if (file) {
-                    self.backgroundImage.src = URL.createObjectURL(file);
-                    self.backgroundImage.onload = self.updateCanvas.bind(self);
+                    self.handleFileSelect(file, 'bg');
                 }
-
-                // saveButtonをアクティブにする
-                self.activateSaveButton(true);
-                
-                // ファイル選択のビジュアルフィードバック
-                document.getElementById('select_background_image').classList.add('has-file');
             });
 
             imageInput2.addEventListener("change", function (event) {
                 const file = event.target.files[0];
                 if (file) {
-                    self.iconImage.src = URL.createObjectURL(file);
-                    self.iconImage.onload = self.updateCanvas.bind(self, true);
-
-                    // アイコンのサイズを取得
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const img = new Image();
-                        img.src = e.target.result;
-                        img.onload = function () {
-                            self.iconRectSize = img.width;
-                        };
-                    };
+                    self.handleFileSelect(file, 'icon');
                 }
-                // saveButtonをアクティブにする
-                self.activateSaveButton(true);
-                
-                // ファイル選択のビジュアルフィードバック
-                document.getElementById('select_icon_image').classList.add('has-file');
             });
 
             saveButton.addEventListener("click", function () {

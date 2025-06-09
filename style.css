@@ -133,6 +133,20 @@ body {
     color: var(--accent-color);
 }
 
+#select_background_image.drag-over,
+#select_icon_image.drag-over {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+    transform: scale(1.02);
+}
+
+#select_background_image.drag-over::after,
+#select_icon_image.drag-over::after {
+    content: 'ここにドロップ';
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
 .icon-size-selection {
     background: var(--surface);
 }
