@@ -13,6 +13,9 @@
         
         // プレビュー用キャンバス
         previewCanvas = null;
+        
+        // ドラッグ中フラグ
+        isDraggingPreview = false;
 
         constructor(
             id_background,
@@ -264,6 +267,14 @@
         }
 
         updateCanvas(flag_resize = true, flag_draw_rectangle = true) {
+            // 画像が読み込まれていない場合は何もしない
+            if (!this.backgroundImage.complete || !this.iconImage.complete) {
+                console.log('Images not complete:', this.backgroundImage.complete, this.iconImage.complete);
+                return;
+            }
+            
+            console.log('updateCanvas called with:', flag_resize, flag_draw_rectangle, 'pickup_top:', this.pickup_top);
+            
             if (this.backgroundImage.complete && this.iconImage.complete) {
                 const ctx = this.ctx;
                 const pickup_top = this.pickup_top;
@@ -337,7 +348,28 @@
         }
         
         updatePreview() {
-            // プレビュー用のキャンバスを作成（背景画像全体を表示）
+            // プレビューエリアを取得
+            const previewArea = document.getElementById("recent_downloads");
+            const placeholder = previewArea.querySelector('.preview-placeholder');
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+            
+            // 既存のキャンバスをチェック
+            const existingCanvas = previewArea.querySelector('canvas');
+            
+            if (existingCanvas && this.isDraggingPreview) {
+                // ドラッグ中の場合は既存のキャンバスの内容だけを更新
+                const tempCtx = existingCanvas.getContext("2d");
+                tempCtx.clearRect(0, 0, existingCanvas.width, existingCanvas.height);
+                tempCtx.drawImage(this.canvasElement, 0, 0);
+                
+                // 既存のキャンバスを保存
+                this.previewCanvas = existingCanvas;
+                return;
+            }
+            
+            // 新しいキャンバスを作成
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = this.canvasElement.width;
             tempCanvas.height = this.canvasElement.height;
@@ -346,26 +378,32 @@
             // 元のcanvas全体をコピー
             tempCtx.drawImage(this.canvasElement, 0, 0);
             
-            // プレビューエリアを更新
-            const previewArea = document.getElementById("recent_downloads");
-            const placeholder = previewArea.querySelector('.preview-placeholder');
-            if (placeholder) {
-                placeholder.style.display = 'none';
-            }
-            
             // 既存のキャンバスがあれば削除
-            const existingCanvas = previewArea.querySelector('canvas');
             if (existingCanvas) {
+                // 古いキャンバスのイベントリスナーを削除
+                existingCanvas.style.cursor = 'default';
+                existingCanvas.dataset.eventsSet = 'false';
                 existingCanvas.remove();
             }
             
             // 新しいキャンバスを追加
+            // アスペクト比を計算して高さを設定
+            const aspectRatio = tempCanvas.height / tempCanvas.width;
+            
             tempCanvas.style.width = '100%';
             tempCanvas.style.maxWidth = '100%';
-            tempCanvas.style.height = 'auto';
+            tempCanvas.style.height = `${tempCanvas.height}px`;
+            tempCanvas.style.maxHeight = '400px';
             tempCanvas.style.borderRadius = '12px';
             tempCanvas.style.boxShadow = 'var(--shadow-lg)';
+            tempCanvas.style.display = 'block';
             previewArea.insertBefore(tempCanvas, previewArea.firstChild);
+            
+            console.log('Canvas inserted with dimensions:', {
+                canvasWidth: tempCanvas.width,
+                canvasHeight: tempCanvas.height,
+                aspectRatio: aspectRatio
+            });
             
             // コピーボタンを表示
             const copyButtonArea = document.getElementById("copyButtonArea");
@@ -374,8 +412,47 @@
             // グローバルに保存（コピーボタンで使用）
             this.previewCanvas = tempCanvas;
             
-            // プレビューキャンバスにドラッグイベントを設定
-            this.setPreviewCanvasEvent(tempCanvas);
+            // ブラウザのレイアウト計算を強制的に実行
+            tempCanvas.offsetHeight; // リフローを強制
+            
+            // キャンバスのサイズが正しく設定されるまで待ってからイベントを設定
+            const setupEvents = () => {
+                const rect = tempCanvas.getBoundingClientRect();
+                console.log('Setting up events, canvas details:', {
+                    rect: rect,
+                    style: {
+                        width: tempCanvas.style.width,
+                        height: tempCanvas.style.height,
+                        display: tempCanvas.style.display
+                    },
+                    clientDimensions: {
+                        clientWidth: tempCanvas.clientWidth,
+                        clientHeight: tempCanvas.clientHeight
+                    },
+                    offsetDimensions: {
+                        offsetWidth: tempCanvas.offsetWidth,
+                        offsetHeight: tempCanvas.offsetHeight
+                    },
+                    canvasDimensions: {
+                        width: tempCanvas.width,
+                        height: tempCanvas.height
+                    },
+                    parentElement: tempCanvas.parentElement,
+                    isConnected: tempCanvas.isConnected
+                });
+                
+                if (rect.height > 0 && rect.width > 0) {
+                    // プレビューキャンバスにドラッグイベントを設定
+                    this.setPreviewCanvasEvent(tempCanvas);
+                } else {
+                    // まだ高さが0の場合は少し待ってから再試行
+                    console.log('Canvas still not properly sized, retrying...');
+                    setTimeout(setupEvents, 100);
+                }
+            };
+            
+            // 次のフレームで実行
+            requestAnimationFrame(setupEvents);
         }
 
         activateSaveButton(flag) {
@@ -493,41 +570,99 @@
         
         setPreviewCanvasEvent(canvas) {
             const self = this;
-            let isDraggingPreview = false;
-            let startY = 0;
-            let startPickupTop = 0;
+            
+            // 既にイベントが設定済みかチェック
+            if (canvas.dataset.eventsSet === 'true') {
+                console.log('Events already set for this canvas');
+                return;
+            }
             
             // カーソルスタイルを設定
             canvas.style.cursor = 'grab';
+            canvas.dataset.eventsSet = 'true';
+            
+            const updateIconPosition = function(event) {
+                // デバッグ用ログ
+                console.log('updateIconPosition called');
+                console.log('canvas (parameter):', canvas);
+                console.log('canvas id:', canvas.id);
+                console.log('canvas parent:', canvas.parentElement);
+                console.log('iconRectSize:', self.iconRectSize);
+                console.log('canvasElement height:', self.canvasElement.height);
+                
+                // 必要な値が存在するかチェック
+                if (!self.iconRectSize || !self.canvasElement.height) {
+                    console.log('Missing required values for position calculation');
+                    return;
+                }
+                
+                // キャンバスの表示サイズをチェック
+                const rect = canvas.getBoundingClientRect();
+                console.log('canvas getBoundingClientRect:', rect);
+                
+                if (rect.height === 0 || rect.width === 0) {
+                    console.log('Canvas dimensions are 0, cannot calculate position');
+                    return;
+                }
+                
+                console.log('rect:', rect);
+                console.log('event.clientY:', event.clientY);
+                console.log('rect.top:', rect.top);
+                console.log('event.clientY - rect.top:', event.clientY - rect.top);
+                
+                const scaleY = self.canvasElement.height / rect.height;
+                console.log('scaleY calculation:', self.canvasElement.height, '/', rect.height, '=', scaleY);
+                
+                // マウス位置をキャンバス内に制限
+                const relativeY = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
+                const mouseY = relativeY * scaleY;
+                console.log('relativeY:', relativeY, 'mouseY:', mouseY);
+                
+                console.log('Mouse calculation:', {
+                    relativeY: relativeY,
+                    scaleY: scaleY,
+                    mouseY: mouseY,
+                    iconRectSize: self.iconRectSize,
+                    'mouseY - iconRectSize/2': mouseY - (self.iconRectSize / 2),
+                    'Math.round result': Math.round(mouseY - (self.iconRectSize / 2))
+                });
+                
+                // アイコンの上下中央がマウス位置になるように設定
+                const calculatedTop = mouseY - (self.iconRectSize / 2);
+                console.log('calculatedTop before Math.round:', calculatedTop);
+                self.pickup_top = Math.round(calculatedTop);
+                console.log('pickup_top after Math.round:', self.pickup_top);
+                
+                // 範囲制限
+                const minTop = 0;
+                const maxTop = self.canvasElement.height - self.iconRectSize;
+                self.pickup_top = Math.max(minTop, Math.min(maxTop, self.pickup_top));
+                
+                // 更新（ドラッグ中はリサイズしない）
+                console.log('Final pickup_top:', self.pickup_top);
+                self.updateCanvas(false, true);
+                
+                // ドラッグ中でもプレビューを更新
+                if (self.isDraggingPreview) {
+                    self.updatePreview();
+                }
+            };
             
             canvas.addEventListener("mousedown", function (event) {
                 event.preventDefault();
-                isDraggingPreview = true;
+                self.isDraggingPreview = true;
                 canvas.style.cursor = 'grabbing';
                 
-                // 開始位置を記録
-                startY = event.clientY;
-                startPickupTop = self.pickup_top;
+                // クリック時に位置更新
+                updateIconPosition(event);
             });
             
             const handleMouseMove = function (event) {
-                if (isDraggingPreview) {
+                if (self.isDraggingPreview) {
                     event.preventDefault();
                     
-                    // ドラッグ量を計算
-                    const rect = canvas.getBoundingClientRect();
-                    const scaleY = self.canvasElement.height / rect.height;
-                    const deltaY = (event.clientY - startY) * scaleY;
-                    
-                    // 新しい位置を計算
-                    self.pickup_top = startPickupTop + deltaY;
-                    
-                    // 範囲制限
-                    const minTop = 0;
-                    const maxTop = self.canvasElement.height - self.iconRectSize;
-                    self.pickup_top = Math.max(minTop, Math.min(maxTop, self.pickup_top));
-                    
-                    self.updateCanvas(false);
+                    // ドラッグ時も同じロジックで位置更新
+                    updateIconPosition(event);
                 }
             };
             
@@ -535,9 +670,12 @@
             document.addEventListener("mousemove", handleMouseMove);
             
             const stopDragging = function () {
-                if (isDraggingPreview) {
-                    isDraggingPreview = false;
+                if (self.isDraggingPreview) {
+                    self.isDraggingPreview = false;
                     canvas.style.cursor = 'grab';
+                    
+                    // ドラッグ終了後にプレビューを更新
+                    self.updatePreview();
                 }
             };
             
