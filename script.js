@@ -337,20 +337,14 @@
         }
         
         updatePreview() {
-            // プレビュー用の一時キャンバスを作成
+            // プレビュー用のキャンバスを作成（背景画像全体を表示）
             const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = 1280;
-            tempCanvas.height = this.iconRectSize;
+            tempCanvas.width = this.canvasElement.width;
+            tempCanvas.height = this.canvasElement.height;
             const tempCtx = tempCanvas.getContext("2d");
             
-            // 元のcanvasの一部を一時キャンバスに描画
-            tempCtx.drawImage(
-                this.canvasElement,
-                0,
-                -this.pickup_top,
-                1280,
-                this.canvasElement.height
-            );
+            // 元のcanvas全体をコピー
+            tempCtx.drawImage(this.canvasElement, 0, 0);
             
             // プレビューエリアを更新
             const previewArea = document.getElementById("recent_downloads");
@@ -366,6 +360,7 @@
             }
             
             // 新しいキャンバスを追加
+            tempCanvas.style.width = '100%';
             tempCanvas.style.maxWidth = '100%';
             tempCanvas.style.height = 'auto';
             tempCanvas.style.borderRadius = '12px';
@@ -378,6 +373,9 @@
             
             // グローバルに保存（コピーボタンで使用）
             this.previewCanvas = tempCanvas;
+            
+            // プレビューキャンバスにドラッグイベントを設定
+            this.setPreviewCanvasEvent(tempCanvas);
         }
 
         activateSaveButton(flag) {
@@ -491,6 +489,62 @@
             clickable_canvas.addEventListener("mouseleave", function () {
                 self.isDragging = false;
             });
+        }
+        
+        setPreviewCanvasEvent(canvas) {
+            const self = this;
+            let isDraggingPreview = false;
+            let startY = 0;
+            let startPickupTop = 0;
+            
+            // カーソルスタイルを設定
+            canvas.style.cursor = 'grab';
+            
+            canvas.addEventListener("mousedown", function (event) {
+                event.preventDefault();
+                isDraggingPreview = true;
+                canvas.style.cursor = 'grabbing';
+                
+                // 開始位置を記録
+                startY = event.clientY;
+                startPickupTop = self.pickup_top;
+            });
+            
+            const handleMouseMove = function (event) {
+                if (isDraggingPreview) {
+                    event.preventDefault();
+                    
+                    // ドラッグ量を計算
+                    const rect = canvas.getBoundingClientRect();
+                    const scaleY = self.canvasElement.height / rect.height;
+                    const deltaY = (event.clientY - startY) * scaleY;
+                    
+                    // 新しい位置を計算
+                    self.pickup_top = startPickupTop + deltaY;
+                    
+                    // 範囲制限
+                    const minTop = 0;
+                    const maxTop = self.canvasElement.height - self.iconRectSize;
+                    self.pickup_top = Math.max(minTop, Math.min(maxTop, self.pickup_top));
+                    
+                    self.updateCanvas(false);
+                }
+            };
+            
+            canvas.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mousemove", handleMouseMove);
+            
+            const stopDragging = function () {
+                if (isDraggingPreview) {
+                    isDraggingPreview = false;
+                    canvas.style.cursor = 'grab';
+                }
+            };
+            
+            canvas.addEventListener("mouseup", stopDragging);
+            document.addEventListener("mouseup", stopDragging);
+            
+            // キャンバスから離れてもドキュメント上でmousemoveを追跡するため、mouseleaveは不要
         }
     }
 

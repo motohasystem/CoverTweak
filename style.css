@@ -461,10 +461,11 @@ hr {
 
 .preview-block {
     position: relative;
-    min-height: 200px;
+    min-height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 3rem 2rem;
 }
 
 .preview-placeholder {
@@ -482,6 +483,10 @@ hr {
 #recent_downloads canvas {
     display: block;
     margin: 0 auto;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .sns-block {
