@@ -335,15 +335,29 @@
                     self.canvasElement.height
                 );
 
-                // 一時キャンバスを画面に追加して描画範囲を確認（デバッグ用）
-                const recent_downloads =
-                    document.getElementById("copyButtonArea");
-                console.log({ recent_downloads });
-                recent_downloads.parentNode.insertBefore(
-                    tempCanvas,
-                    recent_downloads
-                );
-                recent_downloads.style.display = "block";
+                // プレビューエリアを更新
+                const previewArea = document.getElementById("recent_downloads");
+                const placeholder = previewArea.querySelector('.preview-placeholder');
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
+                
+                // 既存のキャンバスがあれば削除
+                const existingCanvas = previewArea.querySelector('canvas');
+                if (existingCanvas) {
+                    existingCanvas.remove();
+                }
+                
+                // 新しいキャンバスを追加
+                tempCanvas.style.maxWidth = '100%';
+                tempCanvas.style.height = 'auto';
+                tempCanvas.style.borderRadius = '12px';
+                tempCanvas.style.boxShadow = 'var(--shadow-lg)';
+                previewArea.insertBefore(tempCanvas, previewArea.firstChild);
+                
+                // コピーボタンを表示
+                const copyButtonArea = document.getElementById("copyButtonArea");
+                copyButtonArea.style.display = "block";
 
                 // 一時キャンバスのデータをダウンロード用リンクに設定
                 const link = document.createElement("a");
@@ -355,11 +369,15 @@
 
                 self.updateCanvas(false, true);
 
-                // クリップボードにコピーするボタン用のイベント
+                // クリップボードにコピーするボタン用のイベント（一度だけ設定）
                 ["copyButton", "inlineCopyButton"].forEach((id) => {
                     const copyButton = document.getElementById(id);
-
-                    copyButton.addEventListener("click", () => {
+                    
+                    // 既存のイベントリスナーを削除（重複防止）
+                    const newButton = copyButton.cloneNode(true);
+                    copyButton.parentNode.replaceChild(newButton, copyButton);
+                    
+                    newButton.addEventListener("click", () => {
                         tempCanvas.toBlob((blob) => {
                             const item = new ClipboardItem({
                                 "image/png": blob,
@@ -374,10 +392,10 @@
                                 tooltip.style.padding = "5px 10px";
                                 tooltip.style.borderRadius = "5px";
                                 tooltip.style.top = `${
-                                    copyButton.getBoundingClientRect().top - 30
+                                    newButton.getBoundingClientRect().top - 30
                                 }px`;
                                 tooltip.style.left = `${
-                                    copyButton.getBoundingClientRect().left
+                                    newButton.getBoundingClientRect().left
                                 }px`;
                                 tooltip.style.zIndex = "1000";
                                 document.body.appendChild(tooltip);

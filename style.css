@@ -491,6 +491,11 @@ hr {
     margin-top: 1rem;
 }
 
+#recent_downloads canvas {
+    display: block;
+    margin: 0 auto;
+}
+
 .sns-block {
     background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
 }
