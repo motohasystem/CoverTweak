@@ -10,67 +10,68 @@
 
         <title>CoverTweak - 自分好みのkintoneスペースを彩るカバー画像を合成しよう</title>
         <link rel="manifest" href="manifest.json" />
-        <link rel="stylesheet" href="style.css?v=1.0.0">
+        <link rel="stylesheet" href="style.css?v=2.0.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <h1 class="header">CoverTweak</h1>
-        <h2 class="subtitle">自分好みのkintoneスペースを彩るカバー画像を合成しよう</h2>
+        <div class="hero-section">
+            <h1 class="header">CoverTweak</h1>
+            <h2 class="subtitle">自分好みのkintoneスペースを彩るカバー画像を合成しよう</h2>
+        </div>
 
         <div class="block" id="select_background_image">
-            <label for="image1" class="label">1️⃣ 背景画像を選択</label><br/>
-            <input type="file" accept="image/*" id="image1" class="file-input" /><br/>
+            <label for="image1" class="label">🌆 背景画像を選択</label>
+            <input type="file" accept="image/*" id="image1" class="file-input" />
         </div>
         
         <div class="block" id="select_icon_image">
-            <label for="image2" class="label">2️⃣ アイコン画像を選択</label><br/>
-            <input type="file" accept="image/*" id="image2" class="file-input" /><br/>
+            <label for="image2" class="label">🎨 アイコン画像を選択</label>
+            <input type="file" accept="image/*" id="image2" class="file-input" />
         </div>
 
         <div class="block icon-size-selection">
-            <label for="" class="label">3️⃣ アイコンサイズを選択</label><br/>
+            <label for="" class="label">📏 アイコンサイズを選択</label>
             <div class="icon-size-options">
-                <div>
-                    <input type="radio" id="size64" name="iconSize" value="64" class="radio-input" checked>
-                    <label for="size64">64px</label>
-                </div>
-                <div>
+                <label class="size-option">
+                    <input type="radio" id="size64" name="iconSize" value="64" class="radio-input">
+                    <span class="size-label">64px</span>
+                </label>
+                <label class="size-option">
                     <input type="radio" id="size128" name="iconSize" value="128" class="radio-input" checked>
-                    <label for="size128">128px</label>
-                </div>
-                <div>
+                    <span class="size-label">128px</span>
+                </label>
+                <label class="size-option">
                     <input type="radio" id="size256" name="iconSize" value="256" class="radio-input">
-                    <label for="size256">256px</label>
-                </div>
-                <div>
+                    <span class="size-label">256px</span>
+                </label>
+                <label class="size-option">
                     <input type="radio" id="size512" name="iconSize" value="512" class="radio-input">
-                    <label for="size512">512px</label>
-                </div>
+                    <span class="size-label">512px</span>
+                </label>
             </div>
         </div>
         
 
 
-        <!-- 作成した画像をシェアするためのSNSボタンを配置する -->
-        <div id="recent_downloads" class="block" width="75%">
-            <!-- クリップボードにコピーするボタンを配置する -->
+        <div id="recent_downloads" class="block preview-block">
+            <div class="preview-placeholder">
+                <span>🖼️ 作成した画像がここに表示されます</span>
+            </div>
             <div id="copyButtonArea">
-                 <button id="copyButton" class="clip-button">📋 copy</button>
+                 <button id="copyButton" class="clip-button">📋 コピー</button>
             </div>
-
         </div>
 
 
 
         <div class="block">
-            <button id="saveButton" class="button">⇩ 画像を保存</button>
+            <button id="saveButton" class="button">💾 画像を保存</button>
         </div>
         
-        <br />
-        
-        <div class="block">
+        <div class="block sns-block">
             <div class="sns-comment" style="display: block;">
-                <button id="inlineCopyButton" class="inline-button">📋 copy</button>
-                でクリップボードにコピーしてSNSにコピペしよう！
+                <button id="inlineCopyButton" class="inline-button">📋 コピー</button>
+                でクリップボードにコピーしてSNSにシェアしよう！
             </div>
             <div class="sns-buttons">
                 <!-- facebook -->
@@ -96,10 +97,6 @@
         <div class="canvas-container">
             <canvas id="canvas" width="0" height="0"></canvas>
         </div>
-
-
-
-        <br />
         
         <h2 class="subheader">使い方</h2>
         <div class="footnote">
@@ -107,7 +104,7 @@
             <p>こちらのnote記事を参考にしてください。<br />
                 <h3 class="footnote-title">誰でも簡単！ポータル/スペースのカバー画像を自在にデザインする3つのステップ</h3>
 
-                <p><a href="https://note.com/motohasystem/n/n1aafd13698c4" class="link">https://note.com/motohasystem/n/n1aafd13698c4</a></p>
+                <a href="https://note.com/motohasystem/n/n1aafd13698c4" class="link">https://note.com/motohasystem/n/n1aafd13698c4</a>
         </div>
 
 
@@ -117,13 +114,13 @@
             <p>このツールの作成にあたって、以下の記事を参考にさせていただきました。kintoneコミュニティの知見の蓄積に感謝します。</p>
             
             <h3 class="footnote-title">スペースのカバー画像のアイデアを検討してみま... | キンコミ kintone user community</h3>
-            <p><a href="https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda" class="link">https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda</a></p>
+            <a href="https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda" class="link">https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda</a>
             
             <h3 class="footnote-title">スペースのカバー画像をいい感じに設定するためのノウハウ</h3>
-            <p><a href="https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT" class="link">https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT</a></p>
+            <a href="https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT" class="link">https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT</a>
             
             <h3 class="footnote-title">【テンプレ有】kintone のスペース カバー画像を(ほぼ)ぴったり作った！｜相澤</h3>
-            <p><a href="https://note.com/zawalog/n/n45ed95da7abc" class="link">https://note.com/zawalog/n/n45ed95da7abc</a></p>
+            <a href="https://note.com/zawalog/n/n45ed95da7abc" class="link">https://note.com/zawalog/n/n45ed95da7abc</a>
         </div>
         
         <hr />

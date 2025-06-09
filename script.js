@@ -107,6 +107,13 @@
                             }
                             // saveButtonをアクティブにする
                             this.activateSaveButton(true);
+                            
+                            // ファイル選択のビジュアルフィードバック
+                            if (this.pasteTarget === "bg") {
+                                document.getElementById('select_background_image').classList.add('has-file');
+                            } else if (this.pasteTarget === "icon") {
+                                document.getElementById('select_icon_image').classList.add('has-file');
+                            }
                         };
                     }
                 }
@@ -203,7 +210,7 @@
             // saveButtonをアクティブにする
             if (flag) {
                 this.saveButtonElement.disabled = false;
-                this.saveButtonElement.style.backgroundColor = "#4CAF50";
+                this.saveButtonElement.style.background = "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)";
             } else {
                 this.saveButtonElement.disabled = true;
                 this.saveButtonElement.style.backgroundColor = "#ccc";
@@ -221,6 +228,9 @@
 
                 // saveButtonをアクティブにする
                 self.activateSaveButton(true);
+                
+                // ファイル選択のビジュアルフィードバック
+                document.getElementById('select_background_image').classList.add('has-file');
             });
 
             imageInput2.addEventListener("change", function (event) {
@@ -241,6 +251,9 @@
                 }
                 // saveButtonをアクティブにする
                 self.activateSaveButton(true);
+                
+                // ファイル選択のビジュアルフィードバック
+                document.getElementById('select_icon_image').classList.add('has-file');
             });
 
             saveButton.addEventListener("click", function () {
@@ -299,7 +312,7 @@
                                 const tooltip = document.createElement("div");
                                 tooltip.textContent = "copied !";
                                 tooltip.style.position = "fixed";
-                                tooltip.style.backgroundColor = "#333";
+                                tooltip.style.background = "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)";
                                 tooltip.style.color = "#fff";
                                 tooltip.style.padding = "5px 10px";
                                 tooltip.style.borderRadius = "5px";
