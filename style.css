@@ -263,18 +263,6 @@ body {
     transform: scale(1.05);
 }
 
-.canvas-container {
-    text-align: center;
-    margin: 3rem 0;
-}
-
-#canvas {
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-    max-width: 100%;
-    height: auto;
-}
 
 .sns-comment {
     text-align: center;
