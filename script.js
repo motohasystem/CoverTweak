@@ -119,6 +119,12 @@
                                 this.iconImage.src = img.src;
                                 this.iconImage.onload =
                                     this.updateCanvas.bind(this);
+                                
+                                // アイコンのサイズは選択されているラジオボタンの値を使用
+                                const selectedRadio = document.querySelector('input[name="iconSize"]:checked');
+                                if (selectedRadio) {
+                                    this.iconRectSize = parseInt(selectedRadio.value);
+                                }
                             }
                             // saveButtonをアクティブにする
                             this.activateSaveButton(true);
@@ -214,8 +220,11 @@
                     this.iconImage.onload = this.updateCanvas.bind(this, true);
                     document.getElementById('select_icon_image').classList.add('has-file');
                     
-                    // アイコンのサイズを取得
-                    this.iconRectSize = img.width;
+                    // アイコンのサイズは選択されているラジオボタンの値を使用
+                    const selectedRadio = document.querySelector('input[name="iconSize"]:checked');
+                    if (selectedRadio) {
+                        this.iconRectSize = parseInt(selectedRadio.value);
+                    }
                 }
                 
                 // saveButtonをアクティブにする
@@ -231,36 +240,56 @@
                 const button = document.getElementById(id);
                 if (button) {
                     button.addEventListener("click", () => {
-                        if (this.previewCanvas) {
-                            this.previewCanvas.toBlob((blob) => {
-                                const item = new ClipboardItem({
-                                    "image/png": blob,
-                                });
-                                navigator.clipboard.write([item]).then(() => {
-                                    // 吹き出しを表示
-                                    const tooltip = document.createElement("div");
-                                    tooltip.textContent = "copied !";
-                                    tooltip.style.position = "fixed";
-                                    tooltip.style.background = "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)";
-                                    tooltip.style.color = "#fff";
-                                    tooltip.style.padding = "5px 10px";
-                                    tooltip.style.borderRadius = "5px";
-                                    tooltip.style.top = `${
-                                        button.getBoundingClientRect().top - 30
-                                    }px`;
-                                    tooltip.style.left = `${
-                                        button.getBoundingClientRect().left
-                                    }px`;
-                                    tooltip.style.zIndex = "1000";
-                                    document.body.appendChild(tooltip);
+                        // 保存時と同じ切り抜き処理を実行
+                        this.updateCanvas(false, false);
+                        
+                        // 元のcanvasの一部をコピーするための一時キャンバスを作成
+                        const tempCanvas = document.createElement("canvas");
+                        tempCanvas.width = 1280;
+                        tempCanvas.height = this.iconRectSize;
+                        const tempCtx = tempCanvas.getContext("2d");
 
-                                    // 2秒後に吹き出しを削除
-                                    setTimeout(() => {
-                                        document.body.removeChild(tooltip);
-                                    }, 2000);
-                                });
+                        // もとのcanvasの一部を一時キャンバスに描画
+                        tempCtx.drawImage(
+                            this.canvasElement,
+                            0,
+                            -this.pickup_top,
+                            1280,
+                            this.canvasElement.height
+                        );
+
+                        // 切り抜いた画像をクリップボードにコピー
+                        tempCanvas.toBlob((blob) => {
+                            const item = new ClipboardItem({
+                                "image/png": blob,
                             });
-                        }
+                            navigator.clipboard.write([item]).then(() => {
+                                // 吹き出しを表示
+                                const tooltip = document.createElement("div");
+                                tooltip.textContent = "copied !";
+                                tooltip.style.position = "fixed";
+                                tooltip.style.background = "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)";
+                                tooltip.style.color = "#fff";
+                                tooltip.style.padding = "5px 10px";
+                                tooltip.style.borderRadius = "5px";
+                                tooltip.style.top = `${
+                                    button.getBoundingClientRect().top - 30
+                                }px`;
+                                tooltip.style.left = `${
+                                    button.getBoundingClientRect().left
+                                }px`;
+                                tooltip.style.zIndex = "1000";
+                                document.body.appendChild(tooltip);
+
+                                // 2秒後に吹き出しを削除
+                                setTimeout(() => {
+                                    document.body.removeChild(tooltip);
+                                }, 2000);
+                            });
+                        });
+                        
+                        // 元の描画状態に戻す
+                        this.updateCanvas(false, true);
                     });
                 }
             });
