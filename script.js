@@ -433,9 +433,9 @@
                 aspectRatio: tempCanvas.height / tempCanvas.width
             });
             
-            // コピーボタンを表示
-            const copyButtonArea = document.getElementById("copyButtonArea");
-            copyButtonArea.style.display = "block";
+            // コピーボタンを表示（copyButtonAreaは削除されたのでこの処理は不要）
+            // const copyButtonArea = document.getElementById("copyButtonArea");
+            // copyButtonArea.style.display = "block";
             
             // グローバルに保存（コピーボタンで使用）
             this.previewCanvas = tempCanvas;
@@ -444,6 +444,9 @@
             tempCanvas.offsetHeight; // リフローを強制
             
             // キャンバスのサイズが正しく設定されるまで待ってからイベントを設定
+            let retryCount = 0;
+            const maxRetries = 10;
+            
             const setupEvents = () => {
                 const rect = tempCanvas.getBoundingClientRect();
                 console.log('Setting up events, canvas details:', {
@@ -466,16 +469,22 @@
                         height: tempCanvas.height
                     },
                     parentElement: tempCanvas.parentElement,
-                    isConnected: tempCanvas.isConnected
+                    isConnected: tempCanvas.isConnected,
+                    retryCount: retryCount
                 });
                 
                 if (rect.height > 0 && rect.width > 0) {
                     // プレビューキャンバスにドラッグイベントを設定
                     this.setPreviewCanvasEvent(tempCanvas);
-                } else {
-                    // まだ高さが0の場合は少し待ってから再試行
-                    console.log('Canvas still not properly sized, retrying...');
+                } else if (retryCount < maxRetries) {
+                    // まだ高さが0の場合は少し待ってから再試行（最大10回まで）
+                    console.log('Canvas still not properly sized, retrying...', retryCount + 1, '/', maxRetries);
+                    retryCount++;
                     setTimeout(setupEvents, 100);
+                } else {
+                    // 最大試行回数に達した場合は、強制的にイベントを設定
+                    console.warn('Canvas size detection failed after', maxRetries, 'attempts. Setting events anyway.');
+                    this.setPreviewCanvasEvent(tempCanvas);
                 }
             };
             
@@ -552,9 +561,9 @@
                 tempCanvas.style.boxShadow = 'var(--shadow-lg)';
                 previewArea.insertBefore(tempCanvas, previewArea.firstChild);
                 
-                // コピーボタンを表示
-                const copyButtonArea = document.getElementById("copyButtonArea");
-                copyButtonArea.style.display = "block";
+                // コピーボタンを表示（copyButtonAreaは削除されたのでこの処理は不要）
+                // const copyButtonArea = document.getElementById("copyButtonArea");
+                // copyButtonArea.style.display = "block";
 
                 // 一時キャンバスのデータをダウンロード用リンクに設定
                 const link = document.createElement("a");

@@ -88,21 +88,26 @@ body {
     cursor: pointer;
     border: 2px dashed var(--border-color);
     background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
-    min-height: 150px;
+    min-height: 180px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    padding-top: 2.5rem;
 }
 
 #select_background_image::before,
 #select_icon_image::before {
     content: '📁';
     font-size: 3rem;
-    margin-bottom: 0.5rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
 }
 
 #select_background_image::after,
@@ -111,7 +116,7 @@ body {
     color: var(--text-tertiary);
     font-size: 0.9rem;
     position: absolute;
-    bottom: 2rem;
+    bottom: 1rem;
 }
 
 #select_background_image:hover,
@@ -213,6 +218,10 @@ body {
     letter-spacing: 0.025em;
 }
 
+.button-secondary {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #059669 100%);
+}
+
 .button:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
@@ -223,26 +232,6 @@ body {
     box-shadow: var(--shadow-sm);
 }
 
-.clip-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: var(--transition);
-    z-index: 10;
-}
-
-.clip-button:hover {
-    background: #059669;
-    transform: scale(1.05);
-}
 
 .inline-button {
     display: inline-block;
@@ -393,10 +382,12 @@ hr {
     justify-content: center;
 }
 
-#copyButtonArea {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
