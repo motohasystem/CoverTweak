@@ -1,4 +1,5 @@
-# [CoverTweak](https://covertweak.kintoys.app/)
+# CoverTweak
+[[demo site](https://covertweak.kintoys.app/)]
 
 CoverTweak は、kintone スペースのカバー画像を簡単に作成するためのツールです。
 このツールを使用すると、背景画像やアイコン画像を選択するだけで、カスタマイズしたカバー画像を生成することができます。
