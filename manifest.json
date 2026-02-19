@@ -1,8 +1,11 @@
 {
-    "name": "画像オーバーレイアプリ",
-    "short_name": "オーバーレイ",
+    "name": "CoverTweak - kintoneスペースのカバー画像合成ツール",
+    "short_name": "CoverTweak",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#ffffff",
-    "description": "2つの画像を重ねて保存するWebアプリ"
+    "theme_color": "#ffffff",
+    "description": "kintoneスペースのカバー画像を簡単に合成・カスタマイズできる無料Webツール",
+    "lang": "ja",
+    "categories": ["design", "utilities"]
 }

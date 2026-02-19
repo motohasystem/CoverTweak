@@ -1,157 +1,208 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" prefix="og: https://ogp.me/ns#">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CoverTweak - 自分好みのkintoneスペースを彩るカバー画像を合成しよう</title>
+        <meta name="description" content="CoverTweakは、kintoneスペースのカバー画像を簡単に合成・カスタマイズできる無料Webツールです。背景画像とアイコンを選ぶだけで、オリジナルのカバー画像を作成できます。" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+        <link rel="canonical" href="https://covertweak.kintoys.app/" />
+
+        <!-- Open Graph -->
         <meta property="og:title" content="CoverTweak - 自分好みのkintoneスペースを彩るカバー画像を合成しよう" />
-        <meta property="og:description" content="CoverTweakを使って、kintoneスペースのカバー画像を簡単に合成し、カスタマイズしましょう。" />
+        <meta property="og:description" content="kintoneスペースのカバー画像を簡単に合成・カスタマイズできる無料Webツール。背景画像とアイコンを選ぶだけでオリジナルのカバー画像を作成。" />
         <meta property="og:image" content="https://covertweak.kintoys.app/img/ogp.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="CoverTweak - kintoneスペースのカバー画像合成ツール" />
         <meta property="og:url" content="https://covertweak.kintoys.app/" />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="CoverTweak" />
+        <meta property="og:locale" content="ja_JP" />
 
-        <title>CoverTweak - 自分好みのkintoneスペースを彩るカバー画像を合成しよう</title>
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="CoverTweak - kintoneスペースのカバー画像を合成しよう" />
+        <meta name="twitter:description" content="kintoneスペースのカバー画像を簡単に合成・カスタマイズできる無料Webツール。" />
+        <meta name="twitter:image" content="https://covertweak.kintoys.app/img/ogp.png" />
+        <meta name="twitter:image:alt" content="CoverTweak - kintoneスペースのカバー画像合成ツール" />
+
+        <!-- 構造化データ JSON-LD -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "CoverTweak",
+            "url": "https://covertweak.kintoys.app/",
+            "description": "kintoneスペースのカバー画像を簡単に合成・カスタマイズできる無料Webツール",
+            "applicationCategory": "DesignApplication",
+            "operatingSystem": "All",
+            "browserRequirements": "Requires a modern web browser",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "JPY"
+            },
+            "author": {
+                "@type": "Organization",
+                "name": "motohasystem",
+                "url": "https://motohasystem.kamiyama.club/"
+            }
+        }
+        </script>
+
+        <!-- パフォーマンス最適化 -->
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://platform.twitter.com" />
+        <link rel="dns-prefetch" href="https://b.st-hatena.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+
         <link rel="manifest" href="manifest.json" />
-        <link rel="stylesheet" href="style.css?v=2.0.0">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="stylesheet" href="style.css?v=2.0.0" />
     </head>
     <body>
-        <div class="hero-section">
+        <header class="hero-section">
             <h1 class="header">CoverTweak</h1>
-            <h2 class="subtitle">自分好みのkintoneスペースを彩るカバー画像を合成しよう</h2>
-        </div>
+            <p class="subtitle">自分好みのkintoneスペースを彩るカバー画像を合成しよう</p>
+        </header>
 
-        <div class="block" id="select_background_image">
-            <label for="image1" class="label">🌆 背景画像を選択</label>
-            <input type="file" accept="image/*" id="image1" class="file-input" />
-        </div>
-        
-        <div class="block" id="select_icon_image">
-            <label for="image2" class="label">🎨 アイコン画像を選択</label>
-            <input type="file" accept="image/*" id="image2" class="file-input" />
-        </div>
+        <main>
+            <section class="block" id="select_background_image" aria-label="背景画像の選択">
+                <label for="image1" class="label">🌆 背景画像を選択</label>
+                <input type="file" accept="image/*" id="image1" class="file-input" />
+            </section>
 
-        <div class="block icon-size-selection">
-            <label for="" class="label">📏 アイコンサイズを選択</label>
-            <div class="icon-size-options">
-                <label class="size-option">
-                    <input type="radio" id="size64" name="iconSize" value="64" class="radio-input">
-                    <span class="size-label">64px</span>
-                </label>
-                <label class="size-option">
-                    <input type="radio" id="size128" name="iconSize" value="128" class="radio-input" checked>
-                    <span class="size-label">128px</span>
-                </label>
-                <label class="size-option">
-                    <input type="radio" id="size256" name="iconSize" value="256" class="radio-input">
-                    <span class="size-label">256px</span>
-                </label>
-                <label class="size-option">
-                    <input type="radio" id="size512" name="iconSize" value="512" class="radio-input">
-                    <span class="size-label">512px</span>
-                </label>
+            <section class="block" id="select_icon_image" aria-label="アイコン画像の選択">
+                <label for="image2" class="label">🎨 アイコン画像を選択</label>
+                <input type="file" accept="image/*" id="image2" class="file-input" />
+            </section>
+
+            <section class="block icon-size-selection" aria-label="アイコンサイズの選択">
+                <p class="label">📏 アイコンサイズを選択</p>
+                <div class="icon-size-options" role="radiogroup" aria-label="アイコンサイズ">
+                    <label class="size-option">
+                        <input type="radio" id="size64" name="iconSize" value="64" class="radio-input" />
+                        <span class="size-label">64px</span>
+                    </label>
+                    <label class="size-option">
+                        <input type="radio" id="size128" name="iconSize" value="128" class="radio-input" checked />
+                        <span class="size-label">128px</span>
+                    </label>
+                    <label class="size-option">
+                        <input type="radio" id="size256" name="iconSize" value="256" class="radio-input" />
+                        <span class="size-label">256px</span>
+                    </label>
+                    <label class="size-option">
+                        <input type="radio" id="size512" name="iconSize" value="512" class="radio-input" />
+                        <span class="size-label">512px</span>
+                    </label>
+                </div>
+            </section>
+
+            <section id="recent_downloads" class="block preview-block" aria-label="プレビュー">
+                <div class="preview-placeholder">
+                    <span>🖼️ 作成した画像がここに表示されます</span>
+                </div>
+            </section>
+
+            <div class="block button-group">
+                <button id="saveButton" class="button" aria-label="画像を保存">💾 画像を保存</button>
+                <button id="copyButton" class="button button-secondary" aria-label="画像をクリップボードにコピー">📋 コピー</button>
             </div>
-        </div>
-        
 
+            <section class="block sns-block" aria-label="SNSシェア">
+                <p class="sns-comment">
+                    <button id="inlineCopyButton" class="inline-button" aria-label="クリップボードにコピー">📋 コピー</button>
+                    でクリップボードにコピーしてSNSにシェアしよう！
+                </p>
+                <nav class="sns-buttons" aria-label="SNSシェアボタン">
+                    <!-- Facebook -->
+                    <div class="fb-share-button" data-href="https://covertweak.kintoys.app/" data-layout="" data-size="">
+                        <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcovertweak.kintoys.app%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">シェアする</a>
+                    </div>
 
-        <div id="recent_downloads" class="block preview-block">
-            <div class="preview-placeholder">
-                <span>🖼️ 作成した画像がここに表示されます</span>
-            </div>
-        </div>
+                    <!-- Bluesky -->
+                    <a class="bsky" target="_blank" rel="noopener noreferrer" href="https://bsky.app/intent/compose?text=CoverTweak%20-%20%E8%87%AA%E5%88%86%E5%A5%BD%E3%81%BF%E3%81%AEkintone%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E3%82%92%E5%BD%A9%E3%82%8B%E3%82%AB%E3%83%90%E3%83%BC%E7%94%BB%E5%83%8F%E3%82%92%E5%90%88%E6%88%90%E3%81%97%E3%82%88%E3%81%86%20%23kintone%20%23CoverTweak%20https%3A%2F%2Fcovertweak.kintoys.app%2F">
+                        <img src="./img/Bluesky_Logo.svg" alt="Bluesky" width="16" height="16" />Bluesky
+                    </a>
 
+                    <!-- Twitter -->
+                    <a data-hashtags="kintone,CoverTweak" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
+                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+                    <!-- LINE -->
+                    <div class="line-it-button" data-lang="ja" data-type="share-a" data-env="REAL" data-url="https://covertweak.kintoys.app/" data-color="default" data-size="small" data-count="true" data-ver="3" style="display: none;"></div>
+                    <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async defer></script>
 
-        <div class="block button-group">
-            <button id="saveButton" class="button">💾 画像を保存</button>
-            <button id="copyButton" class="button button-secondary">📋 コピー</button>
-        </div>
-        
-        <div class="block sns-block">
-            <div class="sns-comment" style="display: block;">
-                <button id="inlineCopyButton" class="inline-button">📋 コピー</button>
-                でクリップボードにコピーしてSNSにシェアしよう！
-            </div>
-            <div class="sns-buttons">
-                <!-- facebook -->
+                    <!-- はてなブックマーク -->
+                    <a href="https://b.hatena.ne.jp/entry/s/covertweak.kintoys.app/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加">
+                        <img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" loading="lazy" />
+                    </a>
+                    <script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async></script>
+                </nav>
+            </section>
 
-                <div class="fb-share-button" data-href="https://covertweak.kintoys.app/" data-layout="" data-size=""><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcovertweak.kintoys.app%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">シェアする</a></div>
+            <canvas id="canvas" style="display: none;" aria-hidden="true"></canvas>
+        </main>
 
-                <!-- BlueSky -->
-                 <a class="bsky" target="_blank" href="https://bsky.app/intent/compose?text=CoverTweak%20-%20%E8%87%AA%E5%88%86%E5%A5%BD%E3%81%BF%E3%81%AEkintone%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E3%82%92%E5%BD%A9%E3%82%8B%E3%82%AB%E3%83%90%E3%83%BC%E7%94%BB%E5%83%8F%E3%82%92%E5%90%88%E6%88%90%E3%81%97%E3%82%88%E3%81%86%20%23kintone%20%23CoverTweak%20https%3A%2F%2Fcovertweak.kintoys.app%2F"><img src="./img/Bluesky_Logo.svg"/>BlueSky</a>
-
-                <!-- twitter -->
-                <a data-hashtags="kintone,CoverTweak" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-                <!-- line -->
-                <div class="line-it-button" data-lang="ja" data-type="share-a" data-env="REAL" data-url="https://covertweak.kintoys.app/" data-color="default" data-size="small" data-count="true" data-ver="3" style="display: none;"></div>
-                <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
-
-                <!-- hatena -->
-                <a href="https://b.hatena.ne.jp/entry/s/covertweak.kintoys.app/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-
-            </div>
-        </div>
-
-        <canvas id="canvas" style="display: none;"></canvas>
-        
-        <h2 class="subheader">使い方</h2>
-        <div class="footnote">
-
-            <p>こちらのnote記事を参考にしてください。<br />
+        <section class="usage-section" aria-label="使い方">
+            <h2 class="subheader">使い方</h2>
+            <div class="footnote">
+                <p>こちらのnote記事を参考にしてください。</p>
                 <h3 class="footnote-title">誰でも簡単！ポータル/スペースのカバー画像を自在にデザインする3つのステップ</h3>
+                <a href="https://note.com/motohasystem/n/n1aafd13698c4" class="link" rel="noopener noreferrer">https://note.com/motohasystem/n/n1aafd13698c4</a>
+            </div>
+        </section>
 
-                <a href="https://note.com/motohasystem/n/n1aafd13698c4" class="link">https://note.com/motohasystem/n/n1aafd13698c4</a>
-        </div>
+        <section class="reference-section" aria-label="参考情報">
+            <h2 class="subheader">参考情報</h2>
+            <div class="footnote">
+                <p>このツールの作成にあたって、以下の記事を参考にさせていただきました。kintoneコミュニティの知見の蓄積に感謝します。</p>
 
+                <h3 class="footnote-title">スペースのカバー画像のアイデアを検討してみま... | キンコミ kintone user community</h3>
+                <a href="https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda" class="link" rel="noopener noreferrer">https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda</a>
 
-        <h2 class="subheader">参考情報</h2>
-        
-        <div class="footnote">
-            <p>このツールの作成にあたって、以下の記事を参考にさせていただきました。kintoneコミュニティの知見の蓄積に感謝します。</p>
-            
-            <h3 class="footnote-title">スペースのカバー画像のアイデアを検討してみま... | キンコミ kintone user community</h3>
-            <a href="https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda" class="link">https://kincom.cybozu.co.jp/chats/ak6ne0eqlitylhda</a>
-            
-            <h3 class="footnote-title">スペースのカバー画像をいい感じに設定するためのノウハウ</h3>
-            <a href="https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT" class="link">https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT</a>
-            
-            <h3 class="footnote-title">【テンプレ有】kintone のスペース カバー画像を(ほぼ)ぴったり作った！｜相澤</h3>
-            <a href="https://note.com/zawalog/n/n45ed95da7abc" class="link">https://note.com/zawalog/n/n45ed95da7abc</a>
-        </div>
-        
+                <h3 class="footnote-title">スペースのカバー画像をいい感じに設定するためのノウハウ</h3>
+                <a href="https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT" class="link" rel="noopener noreferrer">https://kintone-guide.cybozu.co.jp/posts/vUl6LMXT</a>
+
+                <h3 class="footnote-title">【テンプレ有】kintone のスペース カバー画像を(ほぼ)ぴったり作った！｜相澤</h3>
+                <a href="https://note.com/zawalog/n/n45ed95da7abc" class="link" rel="noopener noreferrer">https://note.com/zawalog/n/n45ed95da7abc</a>
+            </div>
+        </section>
+
         <hr />
-        <div class="footer">
-            <p>© 2024 <a href="https://motohasystem.kamiyama.club/">motohasystem</a> / <a href="https://github.com/motohasystem/CoverTweak/tree/main">CoverTweak</a></p>
-        </div>
+        <footer class="footer">
+            <p>&copy; 2024 <a href="https://motohasystem.kamiyama.club/" rel="noopener noreferrer">motohasystem</a> / <a href="https://github.com/motohasystem/CoverTweak/tree/main" rel="noopener noreferrer">CoverTweak</a></p>
+        </footer>
+
+        <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v21.0&appId=559202827068903"></script>
+        <script src="script.js"></script>
+        <script>
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker
+                    .register("service-worker.js")
+                    .then(function (registration) {
+                        console.log(
+                            "ServiceWorker登録成功:",
+                            registration.scope
+                        );
+                    })
+                    .catch(function (err) {
+                        console.log("ServiceWorker登録失敗:", err);
+                    });
+            }
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-NFYLYNX09W"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-NFYLYNX09W');
+        </script>
     </body>
-
-    <script src="script.js"></script>
-    <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker
-                .register("service-worker.js")
-                .then(function (registration) {
-                    console.log(
-                        "ServiceWorker登録成功:",
-                        registration.scope
-                    );
-                })
-                .catch(function (err) {
-                    console.log("ServiceWorker登録失敗:", err);
-                });
-        }
-    </script>
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v21.0&appId=559202827068903"></script>
-
-<!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NFYLYNX09W"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-NFYLYNX09W');
-    </script>
-
-    </html>
+</html>
